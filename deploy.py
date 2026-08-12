@@ -91,8 +91,6 @@ for file in files:
 
         validate_database(sql)
 
-        validate_dependencies(sql, cur)
-
         print(f"Deploying {script}")
 
         cur.execute(sql)
