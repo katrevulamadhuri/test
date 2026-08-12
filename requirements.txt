@@ -1,1 +1,3 @@
 snowflake-connector-python
+sqlparse
+sql-metadata
