@@ -1,1 +1,1 @@
-create view samples as select * from testing
+create view public.samples as select * from testing
