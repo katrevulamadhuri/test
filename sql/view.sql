@@ -1,1 +1,1 @@
-create view temp_view as select * from abcc
+create view public.temp_view as select * from employees
