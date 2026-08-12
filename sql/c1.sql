@@ -1,0 +1,1 @@
+create table public.employees(empid int,empname string)
