@@ -1,0 +1,1 @@
+create table prod.public.student(id int,name string)
