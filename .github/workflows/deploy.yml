@@ -1,0 +1,56 @@
+name: Snowflake Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # ---------------------------------------
+      # 1. Checkout repository
+      # ---------------------------------------
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+
+      # ---------------------------------------
+      # 2. Setup Python
+      # ---------------------------------------
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+
+      # ---------------------------------------
+      # 3. Install dependencies
+      # ---------------------------------------
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+
+      # ---------------------------------------
+      # 4. Run deployment
+      # ---------------------------------------
+
+      - name: Deploy to Snowflake
+        env:
+          ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          USER: ${{ secrets.SNOWFLAKE_USER }}
+          PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+        run: |
+          python deploy.py
