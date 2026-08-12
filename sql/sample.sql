@@ -1,0 +1,1 @@
+create table public.testing(id int,name string,dept string)
