@@ -1,0 +1,9 @@
+CREATE OR REPLACE PROCEDURE test_proc()
+RETURNS STRING
+LANGUAGE SQL
+AS
+$$
+BEGIN
+    RETURN 'Hello from SQL Stored Procedure!';
+END;
+$$;
