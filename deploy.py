@@ -41,7 +41,8 @@ conn = snowflake.connector.connect(
     account=os.environ["ACCOUNT"],
     user=os.environ["USER"],
     password=os.environ["PASSWORD"],
-    database=os.environ["DATABASE"]
+    database=os.environ["DATABASE"],
+    run_url = os.environ.get("RUN_URL")
 )
 
 cur = conn.cursor()
