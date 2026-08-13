@@ -106,7 +106,10 @@ try:
 
         except Exception as e:
             conn.rollback()
-
+            print("=" * 60)
+            print(f"FAILED : {script_name}")
+            print(f"ERROR  : {e}")
+            print("=" * 60)
             for d in deployment_details:
                 cur.execute("""
                     INSERT INTO DEPLOYMENT_HISTORY
