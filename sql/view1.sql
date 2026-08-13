@@ -1,0 +1,1 @@
+create view public.testeer as select * from public.testing
