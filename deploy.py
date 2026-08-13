@@ -3,6 +3,7 @@ import os
 import re
 import subprocess
 import snowflake.connector
+import glob
 
 from validators.database_validator import validate_database
 
@@ -54,10 +55,45 @@ try:
         check=True
     )
 
-    changed_files = sorted(
-        f.strip() for f in result.stdout.splitlines()
+        # Get changed SQL files
+    changed_files = [
+        f.strip()
+        for f in result.stdout.splitlines()
         if f.strip().endswith(".sql")
-    )
+    ]
+
+    order_files = glob.glob("*deploy_order.txt")
+
+
+    if order_files:
+        order_file = order_files[0] 
+
+        with open(order_file, "r", encoding="utf-8") as f:
+            deploy_order = [
+                line.strip()
+                for line in f
+                if line.strip() and not line.startswith("#")
+            ]
+
+        ordered_files = []
+
+        # Add changed files in the order specified in deploy_order.txt
+        for filename in deploy_order:
+            path = filename if filename.startswith("sql/") else f"sql/{filename}"
+            if path in changed_files:
+                ordered_files.append(path)
+
+        # Append any changed files not present in deploy_order.txt
+        remaining = sorted(
+            f for f in changed_files
+            if f not in ordered_files
+        )
+
+        changed_files = ordered_files + remaining
+
+    else:
+        # Default alphabetical deployment
+        changed_files = sorted(changed_files)
 
     failed = []
 
