@@ -86,21 +86,24 @@ try:
                         OPERATION,
                         DEPLOYED_AT,
                         DEPLOYED_BY,
-                        STATUS
+                        STATUS,
+                        LOG_URL
                     )
                     VALUES
                     (
                         %s,%s,%s,%s,
                         CURRENT_TIMESTAMP(),
                         CURRENT_USER(),
-                        'SUCCESS'
+                        'SUCCESS',
+                        %s
                        
                     )
                 """, (
                     script_name,
                     d["object_name"],
                     d["object_type"],
-                    d["operation"]
+                    d["operation"],
+                    run_url
                 ))
 
             conn.commit()
@@ -121,20 +124,23 @@ try:
                         OPERATION,
                         DEPLOYED_AT,
                         DEPLOYED_BY,
-                        STATUS
+                        STATUS,
+                        LOG_URL
                     )
                     VALUES
                     (
                         %s,%s,%s,%s,
                         CURRENT_TIMESTAMP(),
                         CURRENT_USER(),
-                        'FAILED'
+                        'FAILED',
+                        %s
                     )
                 """, (
                     script_name,
                     d["object_name"],
                     d["object_type"],
-                    d["operation"]
+                    d["operation"],
+                    run_url
                 ))
 
             conn.commit()
