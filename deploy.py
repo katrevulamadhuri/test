@@ -62,10 +62,18 @@ try:
         if f.strip().endswith(".sql")
     ]
 
-    order_files = glob.glob("*deploy_order.txt")
-
+    order_files = [
+        f.strip()
+        for f in result.stdout.splitlines()
+        if f.strip().endswith("deploy_order.txt")
+    ]  
 
     if order_files:
+    
+        if len(order_files) > 1:
+            raise Exception(
+                f"Multiple deployment order files found in this deployment: {order_files}"
+            )
         order_file = order_files[0] 
 
         with open(order_file, "r", encoding="utf-8") as f:
