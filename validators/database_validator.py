@@ -2,11 +2,16 @@ import os
 import sqlparse
 from sql_metadata import Parser
 
+# Get the expected database name from the environment variable DATABASE.
+
 EXPECTED_DATABASE = os.environ["DATABASE"].upper()
 
 
 def validate_database(sql):
-
+    # -----------------------------------------------------
+    # Parse the SQL statement using sql_metadata.
+    # Parser analyzes the SQL and helps identify table and object references.
+    # -----------------------------------------------------
     parser = Parser(sql)
 
     objects = parser.tables
