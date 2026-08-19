@@ -1,1 +1,1 @@
-create table public.sampling(id int,dept string)
+create table public.sampling (id int,dept string)
