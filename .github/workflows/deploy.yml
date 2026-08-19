@@ -20,7 +20,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
 
       # ---------------------------------------
@@ -53,5 +53,6 @@ jobs:
           PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
           DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GITHUB_BEFORE: ${{ github.event.before }}
         run: |
           python deploy.py
