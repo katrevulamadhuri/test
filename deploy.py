@@ -76,6 +76,9 @@ conn = snowflake.connector.connect(
 #URL of the current GitHub Actions workflow run.This value can be stored in DEPLOYMENT_HISTORY so that the deployment can be traced back to the CI/CD run.
 run_url = os.environ.get("RUN_URL")
 cur = conn.cursor()
+before_sha = os.environ["GITHUB_BEFORE"]
+after_sha = os.environ.get("GITHUB_SHA", "HEAD")
+
 
 try:
     # -----------------------------------------------------
@@ -92,21 +95,31 @@ try:
     #     text=True,
     #     check=True
     # )
+    if before_sha == "0" * 40:
+    before_sha = subprocess.run(
+        ["git", "hash-object", "-t", "tree", "/dev/null"],
+        capture_output=True, text=True
+    ).stdout.strip()
+
     result = subprocess.run(
-    [
-        "git", "diff", "--name-only", "HEAD^1", "HEAD",
-        "--",
-        ".",
-        ":!.github",
-        ":!validators",
-        ":!requirements.txt",
-        ":!deploy.py",
-        ":!README.md",
-    ],
-    capture_output=True,
-    text=True,
-    check=True
-)
+        ["git", "diff", "--name-only", before_sha, after_sha, "--", ...exclusions],
+        capture_output=True, text=True, check=True
+    )
+#     result = subprocess.run(
+#     [
+#         "git", "diff", "--name-only", "HEAD^1", "HEAD",
+#         "--",
+#         ".",
+#         ":!.github",
+#         ":!validators",
+#         ":!requirements.txt",
+#         ":!deploy.py",
+#         ":!README.md",
+#     ],
+#     capture_output=True,
+#     text=True,
+#     check=True
+# )
 
         # Get changed SQL files
     changed_files = [
