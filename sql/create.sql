@@ -1,1 +1,0 @@
-create table public.student(stdid int, stdname string)

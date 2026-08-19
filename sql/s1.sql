@@ -1,1 +1,0 @@
-create view public.samples as select * from testing

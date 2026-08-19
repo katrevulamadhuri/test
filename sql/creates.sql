@@ -1,1 +1,0 @@
-create table public.products(id int,prod_type string)

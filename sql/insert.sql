@@ -1,1 +1,0 @@
-insert into public.employees values(8765,'rosee')

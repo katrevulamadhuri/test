@@ -1,1 +1,0 @@
-insert into public.testing (id,name,dept) values (12,'kjhgf','piou'),(87,'sdf','mnbv')

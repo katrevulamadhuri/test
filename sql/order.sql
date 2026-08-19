@@ -1,1 +1,0 @@
-create table public.orderss(orderid int,orderdate date)

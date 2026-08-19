@@ -1,1 +1,0 @@
-alter table public.provider add column prov_name string

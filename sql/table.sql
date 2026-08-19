@@ -1,1 +1,0 @@
-create table public.provider(id int,category string)

@@ -1,1 +1,0 @@
-create view public.temp_view as select * from employees

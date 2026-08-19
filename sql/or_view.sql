@@ -1,1 +1,0 @@
-create view public.view_order  as select * from public.orderss
