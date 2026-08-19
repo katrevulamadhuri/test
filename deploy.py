@@ -79,35 +79,64 @@ cur = conn.cursor()
 before_sha = os.environ["GITHUB_BEFORE"]
 after_sha = os.environ.get("GITHUB_SHA", "HEAD")
 
-
 try:
-    # -----------------------------------------------------
-    # Identify files changed in the latest Git commit.
-    #
-    # HEAD~1 = previous commit
-    # HEAD   = current commit
-    # -- sql/
-    # means only changes under the sql directory are returned.
-    # -----------------------------------------------------
-    # result = subprocess.run(
-    #     ["git", "diff", "--name-only", "HEAD~1", "HEAD", "--", "sql/"],
-    #     capture_output=True,
-    #     text=True,
-    #     check=True
-    # )
     if before_sha == "0" * 40:
-    before_sha = subprocess.run(
-        ["git", "hash-object", "-t", "tree", "/dev/null"],
-        capture_output=True, text=True
-    ).stdout.strip()
+        before_sha = subprocess.run(
+            ["git", "hash-object", "-t", "tree", "/dev/null"],
+            capture_output=True, text=True
+        ).stdout.strip()
 
     result = subprocess.run(
-        ["git", "diff", "--name-only", before_sha, after_sha, "--", ...exclusions],
-        capture_output=True, text=True, check=True
+        [
+            "git", "diff", "--name-only", before_sha, after_sha,
+            "--",
+            ".",
+            ":!.github",
+            ":!validators",
+            ":!requirements.txt",
+            ":!deploy.py",
+            ":!README.md",
+        ],
+        capture_output=True,
+        text=True,
+        check=True
     )
-#     result = subprocess.run(
+
+    changed_files = [
+        f.strip()
+        for f in result.stdout.splitlines()
+        if f.strip().endswith(".sql")
+    ]
+
+    order_files = [
+        f.strip()
+        for f in result.stdout.splitlines()
+        if f.strip().endswith("deploy_order.txt")
+    ]
+# try:
+#     # -----------------------------------------------------
+#     # Identify files changed in the latest Git commit.
+#     #
+#     # HEAD~1 = previous commit
+#     # HEAD   = current commit
+#     # -- sql/
+#     # means only changes under the sql directory are returned.
+#     # -----------------------------------------------------
+#     # result = subprocess.run(
+#     #     ["git", "diff", "--name-only", "HEAD~1", "HEAD", "--", "sql/"],
+#     #     capture_output=True,
+#     #     text=True,
+#     #     check=True
+#     # )
+#     if before_sha == "0" * 40:
+#         before_sha = subprocess.run(
+#             ["git", "hash-object", "-t", "tree", "/dev/null"],
+#             capture_output=True, text=True
+#         ).stdout.strip()
+    
+#   result = subprocess.run(
 #     [
-#         "git", "diff", "--name-only", "HEAD^1", "HEAD",
+#         "git", "diff", "--name-only", before_sha, after_sha,
 #         "--",
 #         ".",
 #         ":!.github",
@@ -120,30 +149,45 @@ try:
 #     text=True,
 #     check=True
 # )
+# #     result = subprocess.run(
+# #     [
+# #         "git", "diff", "--name-only", "HEAD^1", "HEAD",
+# #         "--",
+# #         ".",
+# #         ":!.github",
+# #         ":!validators",
+# #         ":!requirements.txt",
+# #         ":!deploy.py",
+# #         ":!README.md",
+# #     ],
+# #     capture_output=True,
+# #     text=True,
+# #     check=True
+# # )
 
-        # Get changed SQL files
-    changed_files = [
-        f.strip()
-        for f in result.stdout.splitlines()
-        if f.strip().endswith(".sql")
-    ]
-    # -----------------------------------------------------
-    # Check whether deploy_order.txt was also changed.
-    #
-    # This file can be used to control the order in which SQL files are deployed.
-    # Example:
-    #
-    # deploy_order.txt
-    # ----------------
-    # tables/customer.sql
-    # tables/orders.sql
-    # views/customer_view.sql
-    # -----------------------------------------------------
-    order_files = [
-        f.strip()
-        for f in result.stdout.splitlines()
-        if f.strip().endswith("deploy_order.txt")
-    ]  
+#         # Get changed SQL files
+#     changed_files = [
+#         f.strip()
+#         for f in result.stdout.splitlines()
+#         if f.strip().endswith(".sql")
+#     ]
+#     # -----------------------------------------------------
+#     # Check whether deploy_order.txt was also changed.
+#     #
+#     # This file can be used to control the order in which SQL files are deployed.
+#     # Example:
+#     #
+#     # deploy_order.txt
+#     # ----------------
+#     # tables/customer.sql
+#     # tables/orders.sql
+#     # views/customer_view.sql
+#     # -----------------------------------------------------
+#     order_files = [
+#         f.strip()
+#         for f in result.stdout.splitlines()
+#         if f.strip().endswith("deploy_order.txt")
+#     ]  
     # -----------------------------------------------------
     # If deploy_order.txt exists, use it to determine the
     # deployment sequence.
