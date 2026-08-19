@@ -1,0 +1,1 @@
+create view public.testingg as select * from public.sampling
