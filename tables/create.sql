@@ -1,0 +1,1 @@
+create table public.prov(prov_id int,prov_name string)

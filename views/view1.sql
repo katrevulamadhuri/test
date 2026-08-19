@@ -1,0 +1,1 @@
+create view public.sampless as select * from public.testing
