@@ -86,12 +86,27 @@ try:
     # -- sql/
     # means only changes under the sql directory are returned.
     # -----------------------------------------------------
+    # result = subprocess.run(
+    #     ["git", "diff", "--name-only", "HEAD~1", "HEAD", "--", "sql/"],
+    #     capture_output=True,
+    #     text=True,
+    #     check=True
+    # )
     result = subprocess.run(
-        ["git", "diff", "--name-only", "HEAD~1", "HEAD", "--", "sql/"],
-        capture_output=True,
-        text=True,
-        check=True
-    )
+    [
+        "git", "diff", "--name-only", "HEAD^1", "HEAD",
+        "--",
+        ".",
+        ":!.github",
+        ":!validators",
+        ":!requirements.txt",
+        ":!deploy.py",
+        ":!README.md",
+    ],
+    capture_output=True,
+    text=True,
+    check=True
+)
 
         # Get changed SQL files
     changed_files = [
@@ -140,10 +155,16 @@ try:
         ordered_files = []
 
         # Add changed files in the order specified in deploy_order.txt
+        # for filename in deploy_order:
+        #     path = filename if filename.startswith("sql/") else f"sql/{filename}"
+        # Add changed files in the order specified in deploy_order.txt
+        # deploy_order.txt entries must now be full relative paths from repo root,
+        # e.g. "finance/create_view.sql", "sql/tables/customer.sql"
         for filename in deploy_order:
-            path = filename if filename.startswith("sql/") else f"sql/{filename}"
-            if path in changed_files:
-                ordered_files.append(path)
+            if filename in changed_files:
+                ordered_files.append(filename)
+            # if path in changed_files:
+            #     ordered_files.append(path)
 
         # Append any changed files not present in deploy_order.txt
         remaining = sorted(
